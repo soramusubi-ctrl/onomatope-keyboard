@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="title">オノマトペキーボード</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- タイトルバー（プラットフォーム別に表示制御） -->
+    <div class="titlebar" id="titlebar">
+      <!-- macOS: トラフィックライト用スペーサー -->
+      <div class="titlebar-mac-spacer" id="mac-spacer"></div>
+
+      <!-- Windows: カスタムウィンドウボタン -->
+      <div class="titlebar-win-controls" id="win-controls">
+        <button class="win-btn win-btn-minimize" id="btn-minimize" title="最小化">─</button>
+        <button class="win-btn win-btn-close" id="btn-close" title="閉じる（トレイに常駐）">✕</button>
+      </div>
+
+      <div class="titlebar-title">
+        <span class="app-icon">🎹</span>
+        <span data-i18n="title">オノマトペキーボード</span>
+      </div>
+
+      <div class="titlebar-tabs">
+        <button class="tab-btn active" data-tab="home" data-i18n="tabHome">ホーム</button>
+        <button class="tab-btn" data-tab="settings" data-i18n="tabSettings">設定</button>
+      </div>
+    </div>
+
+    <!-- ホームタブ -->
+    <div id="tab-home" class="tab-content active">
+      <!-- メインON/OFFトグル -->
+      <div class="main-toggle-section">
+        <div class="toggle-card" id="main-toggle-card">
+          <div class="toggle-visual">
+            <div class="sound-wave" id="sound-wave">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="toggle-info">
+            <div class="toggle-status" id="toggle-status" data-i18n="statusOn">ON</div>
+            <div class="toggle-subtitle" id="toggle-subtitle" data-i18n="statusSubtitleOn">キーボード音が鳴ります</div>
+          </div>
+          <label class="big-toggle">
+            <input type="checkbox" id="enabled-toggle" checked>
+            <span class="big-toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 音量スライダー -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-icon">🔊</span>
+          <span class="section-label" data-i18n="volume">音量</span>
+          <span class="section-value" id="volume-value">70%</span>
+        </div>
+        <div class="slider-container">
+          <span class="slider-icon">🔈</span>
+          <input type="range" id="volume-slider" min="0" max="100" value="70" class="slider">
+          <span class="slider-icon">🔊</span>
+        </div>
+      </div>
+
+      <!-- モード選択 -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-icon">✨</span>
+          <span class="section-label" data-i18n="mode">モード</span>
+        </div>
+        <div class="mode-grid">
+          <button class="mode-btn" data-mode="quiet">
+            <span class="mode-emoji">🌸</span>
+            <span class="mode-name" data-i18n="modeQuiet">おとなしい</span>
+            <span class="mode-desc" data-i18n="modeQuietDesc">控えめで上品</span>
+          </button>
+          <button class="mode-btn active" data-mode="fun">
+            <span class="mode-emoji">🎉</span>
+            <span class="mode-name" data-i18n="modeFun">たのしい</span>
+            <span class="mode-desc" data-i18n="modeFunDesc">明るくポップ</span>
+          </button>
+          <button class="mode-btn" data-mode="ehe">
+            <span class="mode-emoji">🐱</span>
+            <span class="mode-name" data-i18n="modeEhe">えへ系</span>
+            <span class="mode-desc" data-i18n="modeEheDesc">かわいい・照れ</span>
+          </button><!-- mode-ehe -->
+          <button class="mode-btn" data-mode="chaos">
+            <span class="mode-emoji">🌀</span>
+            <span class="mode-name" data-i18n="modeChaos">カオス</span>
+            <span class="mode-desc" data-i18n="modeChaosDesc">予測不能！</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- テスト再生 -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-icon">🎵</span>
+          <span class="section-label" data-i18n="testPlay">テスト再生</span>
+        </div>
+        <div class="test-buttons">
+          <button class="test-btn" data-category="char"><span data-i18n="keyChar">文字キー</span><br><small>Po / Pi / Ko</small></button>
+          <button class="test-btn" data-category="space"><span data-i18n="keySpace">Space</span><br><small>Fuwa</small></button>
+          <button class="test-btn" data-category="enter"><span data-i18n="keyEnter">Enter</span><br><small>Pon</small></button>
+          <button class="test-btn" data-category="backspace"><span data-i18n="keyBs">BS/Del</span><br><small>Suh</small></button>
+          <button class="test-btn" data-category="modifier"><span data-i18n="keyMod">修飾/Fn</span><br><small>Chih</small></button>
+        </div>
+      </div>
+
+      <!-- 最近の音表示 -->
+      <div class="section recent-section">
+        <div class="recent-display" id="recent-display">
+          <span class="recent-icon" id="recent-icon">🎹</span>
+          <span class="recent-text" id="recent-text" data-i18n="recentDefault">キーを押してみてください</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 設定タブ -->
+    <div id="tab-settings" class="tab-content">
+      <!-- 言語切替 -->
+      <div class="section">
+        <div class="section-row">
+          <div class="section-row-info">
+            <span class="section-icon">🌐</span>
+            <div>
+              <div class="section-label" data-i18n="language">言語 / Language</div>
+            </div>
+          </div>
+          <div class="lang-select-group" id="lang-select-group">
+            <button class="lang-btn" data-lang="auto" data-i18n="langAuto">自動 (Auto)</button>
+            <button class="lang-btn" data-lang="en" data-i18n="langEn">English</button>
+            <button class="lang-btn" data-lang="ja" data-i18n="langJa">日本語</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 連打設定 -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-icon">⚡</span>
+          <span class="section-label" data-i18n="throttle">連打間引き</span>
+          <span class="section-value" id="throttle-value">80ms</span>
+        </div>
+        <div class="slider-container">
+          <span class="slider-label" data-i18n="throttleSensitive">敏感</span>
+          <input type="range" id="throttle-slider" min="20" max="300" value="80" class="slider">
+          <span class="slider-label" data-i18n="throttleInsensitive">鈍感</span>
+        </div>
+        <p class="setting-desc" data-i18n="throttleDesc">値が大きいほど連打時の音が間引かれます</p>
+      </div>
+
+      <!-- ナイトモード -->
+      <div class="section">
+        <div class="section-row">
+          <div class="section-row-info">
+            <span class="section-icon">🌙</span>
+            <div>
+              <div class="section-label" data-i18n="nightMode">ナイトモード</div>
+              <div class="setting-desc" data-i18n="nightModeDesc">音量を自動的に下げます（最大50%）</div>
+            </div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="night-mode-toggle">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- キー種別ごとの音確認 -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-icon">🎛️</span>
+          <span class="section-label" data-i18n="keySoundCheck">キー種別ごとの音確認</span>
+        </div>
+        <div class="key-sound-list">
+          <div class="key-sound-item">
+            <div class="key-sound-info">
+              <span class="key-badge char" data-i18n="keyChar">文字</span>
+              <span class="key-sound-desc" data-i18n="keyCharDesc">a〜z, 0〜9 など</span>
+            </div>
+            <button class="play-btn" data-category="char">▶</button>
+          </div>
+          <div class="key-sound-item">
+            <div class="key-sound-info">
+              <span class="key-badge space" data-i18n="keySpace">Space</span>
+              <span class="key-sound-desc" data-i18n="keySpaceDesc">スペースキー</span>
+            </div>
+            <button class="play-btn" data-category="space">▶</button>
+          </div>
+          <div class="key-sound-item">
+            <div class="key-sound-info">
+              <span class="key-badge enter" data-i18n="keyEnter">Enter</span>
+              <span class="key-sound-desc" data-i18n="keyEnterDesc">Enter / Tab</span>
+            </div>
+            <button class="play-btn" data-category="enter">▶</button>
+          </div>
+          <div class="key-sound-item">
+            <div class="key-sound-info">
+              <span class="key-badge backspace" data-i18n="keyBs">BS</span>
+              <span class="key-sound-desc" data-i18n="keyBsDesc">Backspace / Delete</span>
+            </div>
+            <button class="play-btn" data-category="backspace">▶</button>
+          </div>
+          <div class="key-sound-item">
+            <div class="key-sound-info">
+              <span class="key-badge modifier" data-i18n="keyMod">修飾</span>
+              <span class="key-sound-desc" data-i18n="keyModDesc">Shift / Ctrl / Alt / Esc / Win / 矢印 / Fn</span>
+            </div>
+            <button class="play-btn" data-category="modifier">▶</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 対象アプリ指定（Coming Soon） -->
+      <div class="section coming-soon-section">
+        <div class="section-header">
+          <span class="section-icon">🎯</span>
+          <span class="section-label" data-i18n="targetApp">対象アプリ指定</span>
+          <span class="coming-soon-badge" data-i18n="comingSoon">Coming Soon</span>
+        </div>
+        <p class="setting-desc" data-i18n="targetAppDesc">特定のアプリでのみ音を鳴らす機能は今後実装予定です</p>
+      </div>
+
+      <!-- 自作ボイス（Coming Soon） -->
+      <div class="section coming-soon-section">
+        <div class="section-header">
+          <span class="section-icon">🎤</span>
+          <span class="section-label" data-i18n="customVoice">自作ボイス追加</span>
+          <span class="coming-soon-badge" data-i18n="comingSoon">Coming Soon</span>
+        </div>
+        <p class="setting-desc" data-i18n="customVoiceDesc">オリジナルの音声ファイルを追加する機能は今後実装予定です</p>
+      </div>
+
+      <!-- バージョン情報 -->
+      <div class="section version-section">
+        <div class="version-info">
+          <span class="version-icon">🎹</span>
+          <div>
+            <div class="version-name" data-i18n="title">オノマトペキーボード</div>
+            <div class="version-number">v1.0.0</div>
+            <div class="version-platform" id="version-platform"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="soundEngine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
