@@ -56,8 +56,8 @@ macOS優先、将来的なWindows対応も考慮した構成です。
 ## 起動方法
 
 ```bash
-git clone https://github.com/soramusubi-ctrl/sora.git
-cd sora/onomatope-keyboard
+git clone https://github.com/soramusubi-ctrl/onomatope-keyboard.git
+cd onomatope-keyboard
 npm install
 npm start
 ```

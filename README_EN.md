@@ -41,8 +41,8 @@ This app lets you experience those sounds every time you type — not as a trans
 ## 🚀 Installation
 
 ```bash
-git clone https://github.com/soramusubi-ctrl/sora.git
-cd sora/onomatope-keyboard
+git clone https://github.com/soramusubi-ctrl/onomatope-keyboard.git
+cd onomatope-keyboard
 npm install
 npm start
 ```
