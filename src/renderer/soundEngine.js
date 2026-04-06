@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * オノマトペキーボード音 - 音声エンジン
+ * ONOMA音 - 音声エンジン
  * Web Audio API を使用して効果音を管理・再生する
  */
 class SoundEngine {

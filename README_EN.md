@@ -1,4 +1,4 @@
-# 🎹 Onomatopoeia Keyboard
+# 🎹 ONOMA
 
 > Type with the sound of Japanese anime.  
 > ぽ (po). ふわ (fuwa). えへ (ehe).  
@@ -6,7 +6,7 @@
 
 [日本語のREADMEはこちら](README.md)
 
-**Onomatopoeia Keyboard** is a desktop app that plays Japanese sound words (onomatopoeia) as you type. Instead of generic mechanical clicks, your keyboard will sound like a manga panel come to life.
+**ONOMA** is a desktop app that plays Japanese sound words (onomatopoeia) as you type. Instead of generic mechanical clicks, your keyboard will sound like a manga panel come to life.
 
 Built with Electron, uiohook-napi, and Web Audio API.  
 Supports macOS and Windows.

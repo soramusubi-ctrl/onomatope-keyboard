@@ -239,7 +239,7 @@ function getTrayIcon() {
 // ============================================================
 function createTray() {
   tray = new Tray(getTrayIcon());
-  tray.setToolTip('オノマトペキーボード');
+  tray.setToolTip('ONOMA');
   updateTrayMenu();
 
   // Mac: クリックでウィンドウ表示/非表示

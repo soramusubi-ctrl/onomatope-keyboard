@@ -1,7 +1,7 @@
 {
-  "name": "onomatope-keyboard",
+  "name": "onoma",
   "version": "1.0.0",
-  "description": "オノマトペキーボード音アプリ - キーボード入力時にかわいい効果音を鳴らす",
+  "description": "ONOMA - Japanese onomatopoeia keyboard sound app",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
@@ -24,8 +24,8 @@
     "uiohook-napi": "^1.5.5"
   },
   "build": {
-    "appId": "com.onomatope.keyboard",
-    "productName": "オノマトペキーボード",
+    "appId": "com.onoma.app",
+    "productName": "ONOMA",
     "copyright": "Copyright © 2024",
     "files": [
       "src/**/*",
@@ -39,7 +39,6 @@
         "filter": ["**/*.wav"]
       }
     ],
-    "nativeRebuilder": "sequential",
     "mac": {
       "category": "public.app-category.utilities",
       "icon": "assets/icon.png",
@@ -55,17 +54,18 @@
     "win": {
       "icon": "assets/icon.ico",
       "target": [
-        { "target": "nsis", "arch": ["x64", "ia32"] },
         { "target": "portable", "arch": ["x64"] }
       ],
-      "requestedExecutionLevel": "asInvoker"
+      "requestedExecutionLevel": "asInvoker",
+      "forceCodeSigning": false,
+      "signingHashAlgorithms": null
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "オノマトペキーボード",
+      "shortcutName": "ONOMA",
       "installerIcon": "assets/icon.ico",
       "uninstallerIcon": "assets/icon.ico",
       "installerHeaderIcon": "assets/icon.ico"

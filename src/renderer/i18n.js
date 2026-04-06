@@ -2,7 +2,7 @@
 
 const I18N = {
   ja: {
-    title: 'オノマトペキーボード',
+    title: 'ONOMA',
     tabHome: 'ホーム',
     tabSettings: '設定',
     statusOn: 'ON',
@@ -50,7 +50,7 @@ const I18N = {
     langJa: '日本語'
   },
   en: {
-    title: 'Onomatopoeia Keyboard',
+    title: 'ONOMA',
     tabHome: 'Home',
     tabSettings: 'Settings',
     statusOn: 'ON',
