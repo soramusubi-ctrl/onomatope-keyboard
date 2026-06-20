@@ -354,7 +354,7 @@ def generate_all_sounds():
         "fun/modifier_1": make_fun_modifier,
         
         # えへ系モード
-        "ehe/char_1": Video_Project_10.wav,
+        "ehe/char_1": make_ehe_char_1,
         "ehe/char_2": make_ehe_char_2,
         "ehe/char_3": make_ehe_char_3,
         "ehe/space_1": make_ehe_space,

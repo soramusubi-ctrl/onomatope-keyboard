@@ -1,12 +1,5 @@
 'use strict';
 
-/**
- * ONOMA音 - レンダラープロセス
- * UI制御・設定管理・音声エンジン連携
- * Mac・Windows 共通
- */
-
-// カテゴリごとのオノマトペ表示テキスト
 const ONOMATOPOEIA = {
   quiet: {
     char: ['ぽ', 'ぴ', 'こ', 'とん', 'ぽつ'],
@@ -18,21 +11,21 @@ const ONOMATOPOEIA = {
   fun: {
     char: ['ぽぽ', 'きゅ', 'ぴこ', 'ぽん', 'ぴっ'],
     space: ['ぽわーん', 'ふわー', 'ぽわ'],
-    enter: ['ぴんぽーん！', 'やったー', 'ぽーん'],
+    enter: ['ぴんぽーん!', 'やったー!', 'ぽーん'],
     backspace: ['ぴゅ', 'すーっ', 'ぴゅるる'],
     modifier: ['ぴっ', 'ぽっ', 'きゅ']
   },
   ehe: {
     char: ['えへ', 'にゃ', 'ふふ', 'うふ', 'えへへ'],
-    space: ['ほわ〜', 'ふわわ', 'えへ〜'],
-    enter: ['やったー！', 'えへへ', 'ぴゃー'],
-    backspace: ['あれ〜', 'えっ', 'あわわ'],
+    space: ['ほわ~', 'ふわわ', 'えへ~'],
+    enter: ['えへ', 'えへへ', 'えへっ'],
+    backspace: ['あれ~', 'えっ', 'あわわ'],
     modifier: ['ぴょ', 'にゃっ', 'えへ']
   },
   chaos: {
     char: ['ぐわ', 'びよーん', 'ぴぴぴ', 'ぐるぐる', 'ぐにゃ'],
-    space: ['どーん！', 'ぼーん', 'ぐわーん'],
-    enter: ['じゃーん！', 'ばーん！', 'どかーん！'],
+    space: ['どーん!', 'ぼーん', 'ぐわーん'],
+    enter: ['じゃーん!', 'ばーん!', 'どかーん!'],
     backspace: ['ぐしゃ', 'ぼろろ', 'ぐちゃ'],
     modifier: ['ぴゅるるる', 'ぐるぐる', 'ぎゅいーん']
   }
@@ -72,55 +65,44 @@ class OnomatopeApp {
 
   async init() {
     try {
-      // プラットフォーム情報を取得してbodyにクラスを付与
       this.platform = await window.electronAPI.getPlatform();
       document.body.classList.add(`platform-${this.platform === 'win32' ? 'win' : this.platform === 'darwin' ? 'mac' : 'linux'}`);
 
-      // バージョン情報にプラットフォームを表示
       const platformEl = document.getElementById('version-platform');
       if (platformEl) {
         platformEl.textContent = PLATFORM_LABELS[this.platform] || this.platform;
       }
 
-      // 設定を読み込む
       const savedSettings = await window.electronAPI.getSettings();
       this.settings = { ...this.settings, ...savedSettings };
 
-      // 音声ファイルパスを取得
       const soundsPath = await window.electronAPI.getSoundsPath();
+      if (window.location.search.includes('disableAudio=1')) {
+        console.log('Audio init skipped for diagnostics');
+      } else {
+        await this.soundEngine.init(soundsPath, this.settings.volume, this.settings.mode);
+      }
 
-      // 音声エンジンを初期化
-      await this.soundEngine.init(soundsPath, this.settings.volume, this.settings.mode);
-
-      // 言語設定を初期化
       this.initLanguage();
-
-      // UIを初期化
       this.initUI();
-
-      // イベントリスナーを設定
       this.setupEventListeners();
-
-      // メインプロセスからのイベントを受信
       this.setupIPCListeners();
 
       this.isInitialized = true;
-      console.log(`✅ OnomatopeApp initialized on ${this.platform}`);
+      console.log(`OnomatopeApp initialized on ${this.platform}`);
     } catch (err) {
-      console.error('❌ Failed to initialize app:', err);
+      console.error('Failed to initialize app:', err);
       this.showError('初期化に失敗しました: ' + err.message);
     }
   }
 
   initLanguage() {
-    // 保存済み言語設定を優先、なければOS自動検出
     const savedLangPref = this.settings.langPref || 'auto';
     if (savedLangPref === 'en') {
       this.lang = 'en';
     } else if (savedLangPref === 'ja') {
       this.lang = 'ja';
     } else {
-      // auto: OSの言語設定を取得
       const userLang = navigator.language || navigator.userLanguage;
       this.lang = userLang.startsWith('ja') ? 'ja' : 'en';
     }
@@ -132,52 +114,45 @@ class OnomatopeApp {
 
   updateLangButtons() {
     const pref = this.langPref || 'auto';
-    document.querySelectorAll('.lang-btn').forEach(btn => {
+    document.querySelectorAll('.lang-btn').forEach((btn) => {
       btn.classList.toggle('active', btn.dataset.lang === pref);
     });
   }
 
   applyTranslations() {
-    const dict = this.i18n[this.lang] || this.i18n['en'];
-    document.querySelectorAll('[data-i18n]').forEach(el => {
+    const dict = this.i18n[this.lang] || this.i18n.en;
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
       const key = el.getAttribute('data-i18n');
       if (dict[key]) {
         el.textContent = dict[key];
       }
     });
-    
-    // ON/OFFトグルの状態も更新
+
     this.updateToggleUI(this.settings.enabled);
-    // 言語ボタンのアクティブ状態を更新
     this.updateLangButtons();
   }
 
   initUI() {
-    // ON/OFFトグル
     const enabledToggle = document.getElementById('enabled-toggle');
     enabledToggle.checked = this.settings.enabled;
     this.updateToggleUI(this.settings.enabled);
 
-    // 音量スライダー
     const volumeSlider = document.getElementById('volume-slider');
     const volumeValue = document.getElementById('volume-value');
     volumeSlider.value = Math.round(this.settings.volume * 100);
     volumeValue.textContent = `${Math.round(this.settings.volume * 100)}%`;
     this.updateSliderTrack(volumeSlider);
 
-    // モードボタン
-    document.querySelectorAll('.mode-btn').forEach(btn => {
+    document.querySelectorAll('.mode-btn').forEach((btn) => {
       btn.classList.toggle('active', btn.dataset.mode === this.settings.mode);
     });
 
-    // 連打間引きスライダー
     const throttleSlider = document.getElementById('throttle-slider');
     const throttleValue = document.getElementById('throttle-value');
     throttleSlider.value = this.settings.throttleMs;
     throttleValue.textContent = `${this.settings.throttleMs}ms`;
     this.updateSliderTrack(throttleSlider);
 
-    // ナイトモード
     const nightModeToggle = document.getElementById('night-mode-toggle');
     nightModeToggle.checked = this.settings.nightMode;
     if (this.settings.nightMode) {
@@ -186,12 +161,10 @@ class OnomatopeApp {
   }
 
   setupEventListeners() {
-    // タブ切り替え
-    document.querySelectorAll('.tab-btn').forEach(btn => {
+    document.querySelectorAll('.tab-btn').forEach((btn) => {
       btn.addEventListener('click', () => this.switchTab(btn.dataset.tab));
     });
 
-    // ON/OFFトグル
     const enabledToggle = document.getElementById('enabled-toggle');
     enabledToggle.addEventListener('change', async () => {
       this.settings.enabled = enabledToggle.checked;
@@ -200,7 +173,6 @@ class OnomatopeApp {
       await this.soundEngine.resume();
     });
 
-    // 音量スライダー
     const volumeSlider = document.getElementById('volume-slider');
     const volumeValue = document.getElementById('volume-value');
     volumeSlider.addEventListener('input', () => {
@@ -214,13 +186,12 @@ class OnomatopeApp {
       await this.saveSettings({ volume: this.settings.volume });
     });
 
-    // モードボタン
-    document.querySelectorAll('.mode-btn').forEach(btn => {
+    document.querySelectorAll('.mode-btn').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const mode = btn.dataset.mode;
         this.settings.mode = mode;
         this.soundEngine.setMode(mode);
-        document.querySelectorAll('.mode-btn').forEach(b => {
+        document.querySelectorAll('.mode-btn').forEach((b) => {
           b.classList.toggle('active', b.dataset.mode === mode);
         });
         await this.saveSettings({ mode });
@@ -230,34 +201,35 @@ class OnomatopeApp {
       });
     });
 
-    // テスト再生ボタン
-    document.querySelectorAll('.test-btn').forEach(btn => {
+    document.querySelectorAll('.test-btn').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const category = btn.dataset.category;
         await this.soundEngine.resume();
         this.soundEngine.testPlay(category);
         this.showRecentSound(category, false);
         btn.style.transform = 'scale(0.95)';
-        setTimeout(() => { btn.style.transform = ''; }, 150);
+        setTimeout(() => {
+          btn.style.transform = '';
+        }, 150);
       });
     });
 
-    // 設定タブの再生ボタン
-    document.querySelectorAll('.play-btn').forEach(btn => {
+    document.querySelectorAll('.play-btn').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const category = btn.dataset.category;
         await this.soundEngine.resume();
         this.soundEngine.testPlay(category);
         btn.textContent = '♪';
-        setTimeout(() => { btn.textContent = '▶'; }, 500);
+        setTimeout(() => {
+          btn.textContent = '▶';
+        }, 500);
       });
     });
 
-    // 連打間引きスライダー
     const throttleSlider = document.getElementById('throttle-slider');
     const throttleValue = document.getElementById('throttle-value');
     throttleSlider.addEventListener('input', () => {
-      this.settings.throttleMs = parseInt(throttleSlider.value);
+      this.settings.throttleMs = parseInt(throttleSlider.value, 10);
       throttleValue.textContent = `${throttleSlider.value}ms`;
       this.updateSliderTrack(throttleSlider);
     });
@@ -265,18 +237,14 @@ class OnomatopeApp {
       await this.saveSettings({ throttleMs: this.settings.throttleMs });
     });
 
-    // ナイトモード
     const nightModeToggle = document.getElementById('night-mode-toggle');
     nightModeToggle.addEventListener('change', async () => {
       this.settings.nightMode = nightModeToggle.checked;
       document.body.classList.toggle('night-mode', this.settings.nightMode);
-      this.soundEngine.setVolume(
-        this.settings.nightMode ? this.settings.volume * 0.5 : this.settings.volume
-      );
+      this.soundEngine.setVolume(this.settings.nightMode ? this.settings.volume * 0.5 : this.settings.volume);
       await this.saveSettings({ nightMode: this.settings.nightMode });
     });
 
-    // Windows: カスタムウィンドウボタン
     const btnMinimize = document.getElementById('btn-minimize');
     const btnClose = document.getElementById('btn-close');
     if (btnMinimize) {
@@ -290,8 +258,7 @@ class OnomatopeApp {
       });
     }
 
-    // 言語切替ボタン
-    document.querySelectorAll('.lang-btn').forEach(btn => {
+    document.querySelectorAll('.lang-btn').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const pref = btn.dataset.lang;
         this.langPref = pref;
@@ -300,7 +267,6 @@ class OnomatopeApp {
         } else if (pref === 'ja') {
           this.lang = 'ja';
         } else {
-          // auto
           const userLang = navigator.language || navigator.userLanguage;
           this.lang = userLang.startsWith('ja') ? 'ja' : 'en';
         }
@@ -310,7 +276,6 @@ class OnomatopeApp {
       });
     });
 
-    // ウィンドウクリックで AudioContext を再開
     document.addEventListener('click', () => {
       this.soundEngine.resume();
     }, { once: true });
@@ -320,9 +285,7 @@ class OnomatopeApp {
     window.electronAPI.onPlaySound((data) => {
       if (!this.settings.enabled || !this.isInitialized) return;
       const { category, throttled } = data;
-      const vol = this.settings.nightMode
-        ? this.settings.volume * 0.5
-        : this.settings.volume;
+      const vol = this.settings.nightMode ? this.settings.volume * 0.5 : this.settings.volume;
       this.soundEngine.setVolume(vol);
       this.soundEngine.play(category, throttled);
       this.showRecentSound(category, throttled);
@@ -337,10 +300,10 @@ class OnomatopeApp {
   }
 
   switchTab(tabId) {
-    document.querySelectorAll('.tab-btn').forEach(btn => {
+    document.querySelectorAll('.tab-btn').forEach((btn) => {
       btn.classList.toggle('active', btn.dataset.tab === tabId);
     });
-    document.querySelectorAll('.tab-content').forEach(content => {
+    document.querySelectorAll('.tab-content').forEach((content) => {
       content.classList.toggle('active', content.id === `tab-${tabId}`);
     });
   }
@@ -350,7 +313,7 @@ class OnomatopeApp {
     const status = document.getElementById('toggle-status');
     const subtitle = document.getElementById('toggle-subtitle');
     const soundWave = document.getElementById('sound-wave');
-    const dict = this.i18n[this.lang] || this.i18n['en'];
+    const dict = this.i18n[this.lang] || this.i18n.en;
 
     if (enabled) {
       card.classList.remove('disabled');
@@ -375,9 +338,8 @@ class OnomatopeApp {
     const texts = dict[mode]?.[category] || ['...'];
     const text = texts[Math.floor(Math.random() * texts.length)];
     const icon = CATEGORY_ICONS[category] || '🎹';
-    
-    const i18nDict = this.i18n[this.lang] || this.i18n['en'];
-    const suffix = throttled ? (i18nDict.throttledSuffix || '（間引き中）') : '';
+    const i18nDict = this.i18n[this.lang] || this.i18n.en;
+    const suffix = throttled ? i18nDict.throttledSuffix || '（間引き中）' : '';
 
     recentIcon.textContent = icon;
     recentText.textContent = text + suffix;
@@ -425,7 +387,6 @@ class OnomatopeApp {
   }
 }
 
-// アプリを起動
 const app = new OnomatopeApp();
 
 document.addEventListener('DOMContentLoaded', () => {

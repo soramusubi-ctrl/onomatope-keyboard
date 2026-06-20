@@ -1,0 +1,1 @@
+replace with your recorded wav file named char_2.wav

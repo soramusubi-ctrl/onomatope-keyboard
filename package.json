@@ -1,7 +1,7 @@
 {
-  "name": "onoma",
-  "version": "1.0.2",
-  "description": "ONOMA - Japanese onomatopoeia keyboard sound app",
+  "name": "onomatope-keyboard",
+  "version": "1.0.0",
+  "description": "オノマトペキーボード音アプリ - キーボード入力時にかわいい効果音を鳴らす",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
@@ -12,7 +12,13 @@
     "build:all": "electron-builder --mac --win",
     "postinstall": "electron-builder install-app-deps"
   },
-  "keywords": ["electron", "keyboard", "sound", "onomatopoeia", "japanese"],
+  "keywords": [
+    "electron",
+    "keyboard",
+    "sound",
+    "onomatopoeia",
+    "japanese"
+  ],
   "author": "onomatope-keyboard",
   "license": "MIT",
   "devDependencies": {
@@ -24,8 +30,8 @@
     "uiohook-napi": "^1.5.5"
   },
   "build": {
-    "appId": "com.onoma.app",
-    "productName": "ONOMA",
+    "appId": "com.onomatope.keyboard",
+    "productName": "オノマトペキーボード",
     "copyright": "Copyright © 2024",
     "files": [
       "src/**/*",
@@ -36,15 +42,29 @@
       {
         "from": "assets/sounds",
         "to": "sounds",
-        "filter": ["**/*.wav"]
+        "filter": [
+          "**/*.wav"
+        ]
       }
     ],
     "mac": {
       "category": "public.app-category.utilities",
       "icon": "assets/icon.png",
       "target": [
-        { "target": "dmg", "arch": ["arm64", "x64"] },
-        { "target": "zip", "arch": ["arm64", "x64"] }
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
       ],
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
@@ -54,25 +74,38 @@
     "win": {
       "icon": "assets/icon.ico",
       "target": [
-        { "target": "portable", "arch": ["x64"] }
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
       ],
-      "requestedExecutionLevel": "asInvoker",
-      "forceCodeSigning": false,
-      "signingHashAlgorithms": null
+      "requestedExecutionLevel": "asInvoker"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "ONOMA",
+      "shortcutName": "オノマトペキーボード",
       "installerIcon": "assets/icon.ico",
       "uninstallerIcon": "assets/icon.ico",
       "installerHeaderIcon": "assets/icon.ico"
     },
     "linux": {
       "icon": "assets/build",
-      "target": ["AppImage", "deb"],
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "category": "Utility"
     }
   }

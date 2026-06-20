@@ -2,7 +2,7 @@
 
 const I18N = {
   ja: {
-    title: 'ONOMA',
+    title: 'オノマトペキーボード',
     tabHome: 'ホーム',
     tabSettings: '設定',
     statusOn: 'ON',
@@ -21,10 +21,14 @@ const I18N = {
     modeChaosDesc: '予測不能！',
     testPlay: 'テスト再生',
     keyChar: '文字キー',
+    keyCharShort: '文字',
     keySpace: 'Space',
-    keyEnter: 'Enter',
-    keyBs: 'BS/Del',
-    keyMod: '修飾/Fn',
+    keyEnter: 'Enter / Tab',
+    keyEnterShort: 'Enter',
+    keyBs: 'BS / Del',
+    keyBsShort: 'BS',
+    keyMod: '修飾キー',
+    keyModShort: '修飾',
     recentDefault: 'キーを押してみてください',
     throttle: '連打間引き',
     throttleSensitive: '敏感',
@@ -33,11 +37,11 @@ const I18N = {
     nightMode: 'ナイトモード',
     nightModeDesc: '音量を自動的に下げます（最大50%）',
     keySoundCheck: 'キー種別ごとの音確認',
-    keyCharDesc: 'a〜z, 0〜9 など',
+    keyCharDesc: 'a-z, 0-9 など',
     keySpaceDesc: 'スペースキー',
     keyEnterDesc: 'Enter / Tab',
     keyBsDesc: 'Backspace / Delete',
-    keyModDesc: 'Shift / Ctrl / Alt / Esc / Win / 矢印 / Fn',
+    keyModDesc: 'Shift / Ctrl / Alt / Esc / Win / 矢印 / F1-F12',
     targetApp: '対象アプリ指定',
     targetAppDesc: '特定のアプリでのみ音を鳴らす機能は今後実装予定です',
     customVoice: '自作ボイス追加',
@@ -50,7 +54,7 @@ const I18N = {
     langJa: '日本語'
   },
   en: {
-    title: 'ONOMA',
+    title: 'Onomatopoeia Keyboard',
     tabHome: 'Home',
     tabSettings: 'Settings',
     statusOn: 'ON',
@@ -63,16 +67,20 @@ const I18N = {
     modeQuietDesc: 'Subtle & Elegant',
     modeFun: 'Fun',
     modeFunDesc: 'Bright & Pop',
-    modeEhe: 'えへ',
+    modeEhe: 'Ehe',
     modeEheDesc: 'Shy, cute, very anime',
     modeChaos: 'Chaos',
     modeChaosDesc: 'Unpredictable!',
     testPlay: 'Test Play',
     keyChar: 'Letters',
+    keyCharShort: 'Letters',
     keySpace: 'Space',
-    keyEnter: 'Enter',
-    keyBs: 'BS/Del',
+    keyEnter: 'Enter / Tab',
+    keyEnterShort: 'Enter',
+    keyBs: 'BS / Del',
+    keyBsShort: 'BS',
     keyMod: 'Modifiers',
+    keyModShort: 'Mods',
     recentDefault: 'Try pressing any key',
     throttle: 'Sound Throttle',
     throttleSensitive: 'Sensitive',
@@ -85,49 +93,48 @@ const I18N = {
     keySpaceDesc: 'Spacebar',
     keyEnterDesc: 'Enter / Tab',
     keyBsDesc: 'Backspace / Delete',
-    keyModDesc: 'Shift / Ctrl / Alt / Esc / Win / Arrows / Fn',
+    keyModDesc: 'Shift / Ctrl / Alt / Esc / Win / Arrows / F1-F12',
     targetApp: 'Target App',
     targetAppDesc: 'Feature to play sounds only in specific apps is planned',
     customVoice: 'Custom Voices',
     customVoiceDesc: 'Feature to add your own voice files is planned',
     comingSoon: 'Coming Soon',
     throttledSuffix: ' (muted)',
-    language: '言語 / Language',
+    language: 'Language',
     langAuto: 'Auto',
     langEn: 'English',
-    langJa: '日本語'
+    langJa: 'Japanese'
   }
 };
 
-// 英語UI用のオノマトペ表示（日本語主役 + ローマ字補足）
 const ONOMATOPOEIA_EN = {
   quiet: {
-    char: ['ぽ (po)', 'ぴ (pi)', 'こ (ko)', 'とん (ton)', 'ぽつ (potsu)'],
-    space: ['ふわ (fuwa)', 'すー (su-)', 'ほわ (howa)'],
-    enter: ['ぽん (pon)', 'こん (kon)', 'ぽーん (poon)'],
-    backspace: ['すっ (suh)', 'きゅ (kyu)', 'ぴゅ (pyu)'],
-    modifier: ['ちっ (chih)', 'ぴ (pi)', 'こ (ko)']
+    char: ['ぽ', 'ぴ', 'こ', 'とん', 'ぽつ'],
+    space: ['ふわ', 'すー', 'ほわ'],
+    enter: ['ぽん', 'こん', 'ぽーん'],
+    backspace: ['すっ', 'きゅ', 'ぴゅ'],
+    modifier: ['ちっ', 'ぴ', 'こ']
   },
   fun: {
-    char: ['ぽぽ (popo)', 'きゅ (kyu)', 'ぴこ (piko)', 'ぽん (pon)', 'ぴっ (pih)'],
-    space: ['ぽわーん (powaan)', 'ふわー (fuwaa)', 'ぽわ (powa)'],
-    enter: ['ぴんぽーん！ (pinpoon!)', 'やったー (yatta!)', 'ぽーん (poon)'],
-    backspace: ['ぴゅ (pyu)', 'すーっ (suuu)', 'ぴゅるる (pyururu)'],
-    modifier: ['ぴっ (pih)', 'ぽっ (poh)', 'きゅ (kyu)']
+    char: ['ぽぽ', 'きゅ', 'ぴこ', 'ぽん', 'ぴっ'],
+    space: ['ぽわーん', 'ふわー', 'ぽわ'],
+    enter: ['ぴんぽーん!', 'やったー!', 'ぽーん'],
+    backspace: ['ぴゅ', 'すーっ', 'ぴゅるる'],
+    modifier: ['ぴっ', 'ぽっ', 'きゅ']
   },
   ehe: {
-    char: ['えへ (ehe)', 'にゃ (nya)', 'ふふ (fufu)', 'うふ (ufu)', 'えへへ (ehehe)'],
-    space: ['ほわ〜 (howa~)', 'ふわわ (fuwawa)', 'えへ〜 (ehe~)'],
-    enter: ['やったー！ (yatta!)', 'えへへ (ehehe)', 'ぴゃー (pyaa)'],
-    backspace: ['あれ〜 (are~)', 'えっ (eh)', 'あわわ (awawa)'],
-    modifier: ['ぴょ (pyo)', 'にゃっ (nyah)', 'えへ (ehe)']
+    char: ['えへ', 'にゃ', 'ふふ', 'うふ', 'えへへ'],
+    space: ['ほわ~', 'ふわわ', 'えへ~'],
+    enter: ['えへ', 'えへへ', 'えへっ'],
+    backspace: ['あれ~', 'えっ', 'あわわ'],
+    modifier: ['ぴょ', 'にゃっ', 'えへ']
   },
   chaos: {
-    char: ['ぐわ (guwa)', 'びよーん (biyoon)', 'ぴぴぴ (pipipi)', 'ぐるぐる (guruguru)', 'ぐにゃ (gunya)'],
-    space: ['どーん！ (doon!)', 'ぼーん (boon)', 'ぐわーん (guwaan)'],
-    enter: ['じゃーん！ (jaan!)', 'ばーん！ (baan!)', 'どかーん！ (dokaan!)'],
-    backspace: ['ぐしゃ (gusha)', 'ぼろろ (bororo)', 'ぐちゃ (gucha)'],
-    modifier: ['ぴゅるるる (pyurururu)', 'ぐるぐる (guruguru)', 'ぎゅいーん (gyuiin)']
+    char: ['ぐわ', 'びよーん', 'ぴぴぴ', 'ぐるぐる', 'ぐにゃ'],
+    space: ['どーん!', 'ぼーん', 'ぐわーん'],
+    enter: ['じゃーん!', 'ばーん!', 'どかーん!'],
+    backspace: ['ぐしゃ', 'ぼろろ', 'ぐちゃ'],
+    modifier: ['ぴゅるるる', 'ぐるぐる', 'ぎゅいーん']
   }
 };
 

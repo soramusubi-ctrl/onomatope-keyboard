@@ -3,25 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-i18n="title">ONOMA</title>
+  <title data-i18n="title">オノマトペキーボード</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div id="app">
-    <!-- タイトルバー（プラットフォーム別に表示制御） -->
     <div class="titlebar" id="titlebar">
-      <!-- macOS: トラフィックライト用スペーサー -->
       <div class="titlebar-mac-spacer" id="mac-spacer"></div>
-
-      <!-- Windows: カスタムウィンドウボタン -->
       <div class="titlebar-win-controls" id="win-controls">
-        <button class="win-btn win-btn-minimize" id="btn-minimize" title="最小化">─</button>
-        <button class="win-btn win-btn-close" id="btn-close" title="閉じる（トレイに常駐）">✕</button>
+        <button class="win-btn win-btn-minimize" id="btn-minimize" title="最小化">-</button>
+        <button class="win-btn win-btn-close" id="btn-close" title="閉じる（トレイに常駐）">X</button>
       </div>
 
       <div class="titlebar-title">
         <span class="app-icon">🎹</span>
-        <span data-i18n="title">ONOMA</span>
+        <span data-i18n="title">オノマトペキーボード</span>
       </div>
 
       <div class="titlebar-tabs">
@@ -30,9 +26,7 @@
       </div>
     </div>
 
-    <!-- ホームタブ -->
     <div id="tab-home" class="tab-content active">
-      <!-- メインON/OFFトグル -->
       <div class="main-toggle-section">
         <div class="toggle-card" id="main-toggle-card">
           <div class="toggle-visual">
@@ -51,7 +45,6 @@
         </div>
       </div>
 
-      <!-- 音量スライダー -->
       <div class="section">
         <div class="section-header">
           <span class="section-icon">🔊</span>
@@ -65,7 +58,6 @@
         </div>
       </div>
 
-      <!-- モード選択 -->
       <div class="section">
         <div class="section-header">
           <span class="section-icon">✨</span>
@@ -86,7 +78,7 @@
             <span class="mode-emoji">🐱</span>
             <span class="mode-name" data-i18n="modeEhe">えへ系</span>
             <span class="mode-desc" data-i18n="modeEheDesc">かわいい・照れ</span>
-          </button><!-- mode-ehe -->
+          </button>
           <button class="mode-btn" data-mode="chaos">
             <span class="mode-emoji">🌀</span>
             <span class="mode-name" data-i18n="modeChaos">カオス</span>
@@ -95,22 +87,20 @@
         </div>
       </div>
 
-      <!-- テスト再生 -->
       <div class="section">
         <div class="section-header">
           <span class="section-icon">🎵</span>
           <span class="section-label" data-i18n="testPlay">テスト再生</span>
         </div>
         <div class="test-buttons">
-          <button class="test-btn" data-category="char"><span data-i18n="keyChar">文字キー</span><br><small>Po / Pi / Ko</small></button>
-          <button class="test-btn" data-category="space"><span data-i18n="keySpace">Space</span><br><small>Fuwa</small></button>
-          <button class="test-btn" data-category="enter"><span data-i18n="keyEnter">Enter</span><br><small>Pon</small></button>
-          <button class="test-btn" data-category="backspace"><span data-i18n="keyBs">BS/Del</span><br><small>Suh</small></button>
-          <button class="test-btn" data-category="modifier"><span data-i18n="keyMod">修飾/Fn</span><br><small>Chih</small></button>
+          <button class="test-btn" data-category="char"><span data-i18n="keyChar">文字キー</span></button>
+          <button class="test-btn" data-category="space"><span data-i18n="keySpace">Space</span></button>
+          <button class="test-btn" data-category="enter"><span data-i18n="keyEnter">Enter / Tab</span></button>
+          <button class="test-btn" data-category="backspace"><span data-i18n="keyBs">BS / Del</span></button>
+          <button class="test-btn" data-category="modifier"><span data-i18n="keyMod">修飾キー</span></button>
         </div>
       </div>
 
-      <!-- 最近の音表示 -->
       <div class="section recent-section">
         <div class="recent-display" id="recent-display">
           <span class="recent-icon" id="recent-icon">🎹</span>
@@ -119,9 +109,7 @@
       </div>
     </div>
 
-    <!-- 設定タブ -->
     <div id="tab-settings" class="tab-content">
-      <!-- 言語切替 -->
       <div class="section">
         <div class="section-row">
           <div class="section-row-info">
@@ -138,7 +126,6 @@
         </div>
       </div>
 
-      <!-- 連打設定 -->
       <div class="section">
         <div class="section-header">
           <span class="section-icon">⚡</span>
@@ -153,7 +140,6 @@
         <p class="setting-desc" data-i18n="throttleDesc">値が大きいほど連打時の音が間引かれます</p>
       </div>
 
-      <!-- ナイトモード -->
       <div class="section">
         <div class="section-row">
           <div class="section-row-info">
@@ -170,7 +156,6 @@
         </div>
       </div>
 
-      <!-- キー種別ごとの音確認 -->
       <div class="section">
         <div class="section-header">
           <span class="section-icon">🎛️</span>
@@ -179,8 +164,8 @@
         <div class="key-sound-list">
           <div class="key-sound-item">
             <div class="key-sound-info">
-              <span class="key-badge char" data-i18n="keyChar">文字</span>
-              <span class="key-sound-desc" data-i18n="keyCharDesc">a〜z, 0〜9 など</span>
+              <span class="key-badge char" data-i18n="keyCharShort">文字</span>
+              <span class="key-sound-desc" data-i18n="keyCharDesc">a-z, 0-9 など</span>
             </div>
             <button class="play-btn" data-category="char">▶</button>
           </div>
@@ -193,29 +178,28 @@
           </div>
           <div class="key-sound-item">
             <div class="key-sound-info">
-              <span class="key-badge enter" data-i18n="keyEnter">Enter</span>
+              <span class="key-badge enter" data-i18n="keyEnterShort">Enter</span>
               <span class="key-sound-desc" data-i18n="keyEnterDesc">Enter / Tab</span>
             </div>
             <button class="play-btn" data-category="enter">▶</button>
           </div>
           <div class="key-sound-item">
             <div class="key-sound-info">
-              <span class="key-badge backspace" data-i18n="keyBs">BS</span>
+              <span class="key-badge backspace" data-i18n="keyBsShort">BS</span>
               <span class="key-sound-desc" data-i18n="keyBsDesc">Backspace / Delete</span>
             </div>
             <button class="play-btn" data-category="backspace">▶</button>
           </div>
           <div class="key-sound-item">
             <div class="key-sound-info">
-              <span class="key-badge modifier" data-i18n="keyMod">修飾</span>
-              <span class="key-sound-desc" data-i18n="keyModDesc">Shift / Ctrl / Alt / Esc / Win / 矢印 / Fn</span>
+              <span class="key-badge modifier" data-i18n="keyModShort">修飾</span>
+              <span class="key-sound-desc" data-i18n="keyModDesc">Shift / Ctrl / Alt / Esc / Win / 矢印 / F1-F12</span>
             </div>
             <button class="play-btn" data-category="modifier">▶</button>
           </div>
         </div>
       </div>
 
-      <!-- 対象アプリ指定（Coming Soon） -->
       <div class="section coming-soon-section">
         <div class="section-header">
           <span class="section-icon">🎯</span>
@@ -225,7 +209,6 @@
         <p class="setting-desc" data-i18n="targetAppDesc">特定のアプリでのみ音を鳴らす機能は今後実装予定です</p>
       </div>
 
-      <!-- 自作ボイス（Coming Soon） -->
       <div class="section coming-soon-section">
         <div class="section-header">
           <span class="section-icon">🎤</span>
@@ -235,12 +218,11 @@
         <p class="setting-desc" data-i18n="customVoiceDesc">オリジナルの音声ファイルを追加する機能は今後実装予定です</p>
       </div>
 
-      <!-- バージョン情報 -->
       <div class="section version-section">
         <div class="version-info">
           <span class="version-icon">🎹</span>
           <div>
-            <div class="version-name" data-i18n="title">ONOMA</div>
+            <div class="version-name" data-i18n="title">オノマトペキーボード</div>
             <div class="version-number">v1.0.0</div>
             <div class="version-platform" id="version-platform"></div>
           </div>
