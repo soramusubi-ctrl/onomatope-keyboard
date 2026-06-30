@@ -7,7 +7,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setSettings: (settings) => ipcRenderer.invoke('set-settings', settings),
   getSoundsPath: () => ipcRenderer.invoke('get-sounds-path'),
   toggleEnabled: () => ipcRenderer.invoke('toggle-enabled'),
-  getPlatform: () => process.platform,
+  getPlatform: () => ipcRenderer.invoke('get-platform'),
   minimizeWindow: () => ipcRenderer.send('window-minimize'),
   closeWindow: () => ipcRenderer.send('window-close'),
   onPlaySound: (callback) => {
