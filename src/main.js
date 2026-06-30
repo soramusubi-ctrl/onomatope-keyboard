@@ -57,6 +57,20 @@ function sendToRenderer(channel, payload) {
   }
 }
 
+function stopRendererSounds() {
+  sendToRenderer('stop-sounds');
+}
+
+function setEnabled(nextEnabled) {
+  isEnabled = nextEnabled;
+  store.set('enabled', isEnabled);
+  if (!isEnabled) {
+    stopRendererSounds();
+  }
+  sendToRenderer('toggle-enabled', isEnabled);
+  updateTrayMenu();
+}
+
 function startKeyboardHook() {
   if (keyboardHook) return;
 
@@ -194,6 +208,7 @@ function createWindow() {
   mainWindow.on('close', (event) => {
     if (!isQuitting) {
       event.preventDefault();
+      stopRendererSounds();
       mainWindow.hide();
     }
   });
@@ -214,6 +229,7 @@ function toggleWindow() {
     return;
   }
   if (mainWindow.isVisible() && mainWindow.isFocused()) {
+    stopRendererSounds();
     mainWindow.hide();
   } else {
     mainWindow.show();
@@ -228,10 +244,7 @@ function updateTrayMenu() {
     {
       label: isEnabled ? 'ON（クリックでOFF）' : 'OFF（クリックでON）',
       click: () => {
-        isEnabled = !isEnabled;
-        store.set('enabled', isEnabled);
-        sendToRenderer('toggle-enabled', isEnabled);
-        updateTrayMenu();
+        setEnabled(!isEnabled);
       }
     },
     { type: 'separator' },
@@ -251,6 +264,7 @@ function updateTrayMenu() {
       label: '終了',
       click: () => {
         isQuitting = true;
+        stopRendererSounds();
         app.quit();
       }
     }
@@ -286,6 +300,9 @@ ipcMain.handle('set-settings', (event, settings) => {
   });
   if ('enabled' in settings) {
     isEnabled = settings.enabled;
+    if (!isEnabled) {
+      stopRendererSounds();
+    }
     updateTrayMenu();
   }
   return { success: true };
@@ -299,9 +316,7 @@ ipcMain.handle('get-sounds-path', () => {
 });
 
 ipcMain.handle('toggle-enabled', () => {
-  isEnabled = !isEnabled;
-  store.set('enabled', isEnabled);
-  updateTrayMenu();
+  setEnabled(!isEnabled);
   return isEnabled;
 });
 
@@ -312,6 +327,7 @@ ipcMain.on('window-minimize', () => {
 });
 
 ipcMain.on('window-close', () => {
+  stopRendererSounds();
   if (mainWindow) mainWindow.hide();
 });
 
@@ -333,5 +349,6 @@ app.on('window-all-closed', () => {});
 
 app.on('before-quit', () => {
   isQuitting = true;
+  stopRendererSounds();
   stopKeyboardHook();
 });
