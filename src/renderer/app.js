@@ -307,6 +307,12 @@ class OnomatopeApp {
         this.soundEngine.stopAll();
       }
     });
+
+    if (window.electronAPI.onStopSounds) {
+      window.electronAPI.onStopSounds(() => {
+        this.soundEngine.stopAll();
+      });
+    }
   }
 
   switchTab(tabId) {
