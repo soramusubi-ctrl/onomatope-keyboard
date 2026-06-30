@@ -61,6 +61,30 @@ function stopRendererSounds() {
   sendToRenderer('stop-sounds');
 }
 
+function stopKeyboardHook() {
+  if (!keyboardHook) return;
+  try {
+    keyboardHook.stop();
+  } catch {}
+  keyboardHook = null;
+  console.log('Keyboard hook stopped');
+}
+
+function quitApplication() {
+  if (isQuitting) return;
+
+  isQuitting = true;
+  stopRendererSounds();
+  stopKeyboardHook();
+
+  if (tray) {
+    tray.destroy();
+    tray = null;
+  }
+
+  app.quit();
+}
+
 function setEnabled(nextEnabled) {
   isEnabled = nextEnabled;
   store.set('enabled', isEnabled);
@@ -104,15 +128,6 @@ function startKeyboardHook() {
   } catch (err) {
     console.error('Failed to start keyboard hook:', err.message);
   }
-}
-
-function stopKeyboardHook() {
-  if (!keyboardHook) return;
-  try {
-    keyboardHook.stop();
-  } catch {}
-  keyboardHook = null;
-  console.log('Keyboard hook stopped');
 }
 
 function getAppIcon() {
@@ -208,8 +223,7 @@ function createWindow() {
   mainWindow.on('close', (event) => {
     if (!isQuitting) {
       event.preventDefault();
-      stopRendererSounds();
-      mainWindow.hide();
+      quitApplication();
     }
   });
 
@@ -263,9 +277,7 @@ function updateTrayMenu() {
     {
       label: '終了',
       click: () => {
-        isQuitting = true;
-        stopRendererSounds();
-        app.quit();
+        quitApplication();
       }
     }
   ]);
@@ -327,8 +339,7 @@ ipcMain.on('window-minimize', () => {
 });
 
 ipcMain.on('window-close', () => {
-  stopRendererSounds();
-  if (mainWindow) mainWindow.hide();
+  quitApplication();
 });
 
 app.whenReady().then(() => {
@@ -337,6 +348,7 @@ app.whenReady().then(() => {
   setTimeout(startKeyboardHook, 1000);
 
   app.on('activate', () => {
+    if (isQuitting) return;
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     } else if (mainWindow) {
@@ -345,7 +357,11 @@ app.whenReady().then(() => {
   });
 });
 
-app.on('window-all-closed', () => {});
+app.on('window-all-closed', () => {
+  if (!isQuitting) {
+    quitApplication();
+  }
+});
 
 app.on('before-quit', () => {
   isQuitting = true;
