@@ -56,7 +56,8 @@ class OnomatopeApp {
       volume: 0.7,
       mode: 'fun',
       nightMode: false,
-      throttleMs: 80
+      throttleMs: 80,
+      langPref: 'auto'
     };
     this.platform = 'darwin';
     this.isInitialized = false;
@@ -169,8 +170,12 @@ class OnomatopeApp {
     enabledToggle.addEventListener('change', async () => {
       this.settings.enabled = enabledToggle.checked;
       this.updateToggleUI(this.settings.enabled);
+      if (!this.settings.enabled) {
+        this.soundEngine.stopAll();
+      } else {
+        await this.soundEngine.resume();
+      }
       await this.saveSettings({ enabled: this.settings.enabled });
-      await this.soundEngine.resume();
     });
 
     const volumeSlider = document.getElementById('volume-slider');
@@ -189,6 +194,7 @@ class OnomatopeApp {
     document.querySelectorAll('.mode-btn').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const mode = btn.dataset.mode;
+        this.soundEngine.stopAll();
         this.settings.mode = mode;
         this.soundEngine.setMode(mode);
         document.querySelectorAll('.mode-btn').forEach((b) => {
@@ -254,6 +260,7 @@ class OnomatopeApp {
     }
     if (btnClose) {
       btnClose.addEventListener('click', () => {
+        this.soundEngine.stopAll();
         window.electronAPI.closeWindow();
       });
     }
@@ -296,6 +303,9 @@ class OnomatopeApp {
       const enabledToggle = document.getElementById('enabled-toggle');
       enabledToggle.checked = enabled;
       this.updateToggleUI(enabled);
+      if (!enabled) {
+        this.soundEngine.stopAll();
+      }
     });
   }
 
