@@ -7,6 +7,7 @@ class SoundEngine {
     this.volume = 0.7;
     this.mode = 'fun';
     this.lastPlayedSound = {};
+    this.activeAudio = new Set();
     this.isLoaded = false;
   }
 
@@ -58,6 +59,10 @@ class SoundEngine {
     const categoryFiles = modeFiles[category];
     if (!categoryFiles || categoryFiles.length === 0) return;
 
+    // Prevent long custom voice clips from stacking endlessly.
+    // The keyboard should feel snappy: each new key press replaces any currently playing clip.
+    this.stopAll();
+
     let fileIndex = 0;
     if (categoryFiles.length > 1) {
       const lastIndex = this.lastPlayedSound[category];
@@ -69,17 +74,50 @@ class SoundEngine {
     this.lastPlayedSound[category] = fileIndex;
 
     const audio = new Audio(categoryFiles[fileIndex]);
+    audio.preload = 'auto';
     audio.volume = Math.max(0, Math.min(1, throttled ? this.volume * 0.6 : this.volume));
+
+    const cleanup = () => {
+      this.activeAudio.delete(audio);
+      audio.removeEventListener('ended', cleanup);
+      audio.removeEventListener('error', cleanup);
+    };
+
+    audio.addEventListener('ended', cleanup);
+    audio.addEventListener('error', cleanup);
+    this.activeAudio.add(audio);
+
     audio.play().catch((err) => {
+      cleanup();
       console.warn(`Failed to play ${category}:`, err.message);
     });
   }
 
+  stopAll() {
+    this.activeAudio.forEach((audio) => {
+      try {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.src = '';
+        audio.load();
+      } catch (err) {
+        console.warn('Failed to stop audio:', err.message);
+      }
+    });
+    this.activeAudio.clear();
+  }
+
   setVolume(volume) {
     this.volume = Math.max(0, Math.min(1, volume));
+    this.activeAudio.forEach((audio) => {
+      audio.volume = this.volume;
+    });
   }
 
   setMode(mode) {
+    if (mode !== this.mode) {
+      this.stopAll();
+    }
     this.mode = mode;
   }
 
